@@ -28,15 +28,13 @@ class Macsvn < Formula
         next if dep == file # 跳过自身引用
         old_path = dep.split(" ").first
         if old_path.start_with?("/usr/local/svn")
-          new_path = old_path.sub("/usr/local/svn", "@rpath")
+          new_path = old_path.sub("/usr/local/svn", #{lib_path})
           system "install_name_tool", "-change", old_path, new_path, file
         elsif old_path.start_with?("/usr/local/opt")
-          new_path = old_path.sub("/usr/local/opt", "@rpath")
+          new_path = old_path.sub("/usr/local/opt", #{lib_path})
           system "install_name_tool", "-change", old_path, new_path, file
         end
       end
-      # 添加 @rpath
-      system "install_name_tool", "-add_rpath", lib_path, file
     end
   end
 end
