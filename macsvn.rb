@@ -17,30 +17,8 @@ class Macsvn < Formula
     # 获取安装路径
     bin_path = bin.to_s
     lib_path = lib.to_s
-    parent_dir = File.dirname(lib_path)
 
-    # 定义需要更新的文件列表
-    files_to_update = ["#{bin_path}/svn"] + Dir["#{lib_path}/*.dylib"]
-
-    files_to_update.each do |file|
-      # 使用 otool 检查依赖关系
-      dependencies = `otool -L #{file}`.split("\n").map(&:strip)
-      dependencies.each do |dep|
-        next if dep == file # 跳过自身引用
-        old_path = dep.split(" ").first
-        if old_path.start_with?("/usr/local/svn/svn")
-          new_path = old_path.sub("/usr/local/svn/svn", "#{parent_dir}")
-          system "install_name_tool", "-change", old_path, new_path, file
-        elsif old_path.start_with?("/usr/local/svn/serf")
-          new_path = old_path.sub("/usr/local/svn", "#{lib_path}")
-          system "install_name_tool", "-change", old_path, new_path, file
-        elsif old_path.start_with?("/usr/local/opt")
-          new_path = old_path.sub("/usr/local/opt", "#{lib_path}")
-          system "install_name_tool", "-change", old_path, new_path, file
-        end
-      end
-    end
+    system "install_name_tool", "-change", "/usr/local/svn/serf/lib/libserf-1.dylib", "#{lib_path}/serf/lib/libserf-1.dylib", "#{bin_path}/svn"
+    system "install_name_tool", "-change", "/usr/local/svn/sqlite-amalgamation/lib/libsqlite3.0.dylib", "#{lib_path}/sqlite/lib/libsqlite3.0.dylib", "#{bin_path}/svn"
   end
 end
-
-
