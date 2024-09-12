@@ -9,10 +9,23 @@ class Macsvn < Formula
   license ""
 
   def install
-    bin.install Dir["bin/*"]
-    lib.install Dir["lib/*"]
-    include.install Dir["include/*"]
-    share.install Dir["share/*"]
+    system "ls", "-la"
+
+    ohai "bin 目录内容："
+    system "ls", "-la", "bin"
+
+    ohai "lib 目录内容："
+    system "ls", "-la", "lib"
+
+    ohai "include 目录内容："
+    system "ls", "-la", "include"
+
+    ohai "share 目录内容："
+    system "ls", "-la", "share"
+    # bin.install Dir["bin/*"]
+    # lib.install Dir["lib/*"]
+    # include.install Dir["include/*"]
+    # share.install Dir["share/*"]
 
     # system "install_name_tool", "-change", "/usr/local/svn/svn/lib/libsvn_client-1.0.dylib", "#{lib}/libsvn_client-1.0.dylib", "#{bin}/svn"
     # system "install_name_tool", "-change", "/usr/local/svn/svn/lib/libsvn_wc-1.0.dylib", "#{lib}/libsvn_wc-1.0.dylib", "#{bin}/svn"
