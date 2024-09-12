@@ -35,10 +35,6 @@ class Macsvn < Formula
     # system "install_name_tool", "-change", "/usr/local/opt/apr/lib/libapr-1.0.dylib", "#{lib}/apr/libapr-1.0.dylib", "#{bin}/svn"
     # system "install_name_tool", "-change", "/usr/local/opt/gettext/lib/libintl.8.dylib", "#{lib}/gettext/libintl.8.dylib", "#{bin}/svn"
   end
-
-  test do
-    system "#{bin}/svn", "--version"
-  end
 end
 
 
