@@ -14,29 +14,30 @@ class Macsvn < Formula
     include.install Dir["include/*"]
     share.install Dir["share/*"]
 
-    # bin_path = bin.to_s
-    # lib_path = lib.to_s
+    # 获取安装路径
+    bin_path = bin.to_s
+    lib_path = lib.to_s
 
-    # system "install_name_tool", "-change", "/usr/local/svn/svn/lib/libsvn_client-1.0.dylib", "#{lib_path}/libsvn_client-1.0.dylib", "#{bin_path}/svn"
-    # system "install_name_tool", "-change", "/usr/local/svn/svn/lib/libsvn_wc-1.0.dylib", "#{lib_path}/libsvn_wc-1.0.dylib", "#{bin_path}/svn"
-    # system "install_name_tool", "-change", "/usr/local/svn/svn/lib/libsvn_ra-1.0.dylib", "#{lib_path}/libsvn_ra-1.0.dylib", "#{bin_path}/svn"
-    # system "install_name_tool", "-change", "/usr/local/svn/svn/lib/libsvn_diff-1.0.dylib", "#{lib_path}/libsvn_diff-1.0.dylib", "#{bin_path}/svn"
-    # system "install_name_tool", "-change", "/usr/local/svn/svn/lib/libsvn_ra_local-1.0.dylib", "#{lib_path}/libsvn_ra_local-1.0.dylib", "#{bin_path}/svn"
-    # system "install_name_tool", "-change", "/usr/local/svn/svn/lib/libsvn_repos-1.0.dylib", "#{lib_path}/libsvn_repos-1.0.dylib", "#{bin_path}/svn"
-    # system "install_name_tool", "-change", "/usr/local/svn/svn/lib/libsvn_fs-1.0.dylib", "#{lib_path}/libsvn_fs-1.0.dylib", "#{bin_path}/svn"
-    # system "install_name_tool", "-change", "/usr/local/svn/svn/lib/libsvn_fs_fs-1.0.dylib", "#{lib_path}/libsvn_fs_fs-1.0.dylib", "#{bin_path}/svn"
-    # system "install_name_tool", "-change", "/usr/local/svn/svn/lib/libsvn_fs_x-1.0.dylib", "#{lib_path}/libsvn_fs_x-1.0.dylib", "#{bin_path}/svn"
-    # system "install_name_tool", "-change", "/usr/local/svn/svn/lib/libsvn_fs_util-1.0.dylib", "#{lib_path}/libsvn_fs_util-1.0.dylib", "#{bin_path}/svn"
-    # system "install_name_tool", "-change", "/usr/local/svn/svn/lib/libsvn_ra_svn-1.0.dylib", "#{lib_path}/libsvn_ra_svn-1.0.dylib", "#{bin_path}/svn"
-    # system "install_name_tool", "-change", "/usr/local/svn/svn/lib/libsvn_ra_serf-1.0.dylib", "#{lib_path}/libsvn_ra_serf-1.0.dylib", "#{bin_path}/svn"
-    # system "install_name_tool", "-change", "/usr/local/svn/serf/lib/libserf-1.dylib", "#{lib_path}/serf/libserf-1.dylib", "#{bin_path}/svn"
-    # system "install_name_tool", "-change", "/usr/local/svn/svn/lib/libsvn_delta-1.0.dylib", "#{lib_path}/libsvn_delta-1.0.dylib", "#{bin_path}/svn"
-    # system "install_name_tool", "-change", "/usr/local/svn/svn/lib/libsvn_subr-1.0.dylib", "#{lib_path}/libsvn_subr-1.0.dylib", "#{bin_path}/svn"
-    # system "install_name_tool", "-change", "/usr/local/svn/sqlite-amalgamation/lib/libsqlite3.0.dylib", "#{lib_path}/sqlite/libsqlite3.0.dylib", "#{bin_path}/svn"
-    # system "install_name_tool", "-change", "/usr/local/opt/zlib/lib/libz.1.dylib", "#{lib_path}/zlib/libz.1.dylib", "#{bin_path}/svn"
-    # system "install_name_tool", "-change", "/usr/local/opt/apr-util/lib/libaprutil-1.0.dylib", "#{lib_path}/apr-util/libaprutil-1.0.dylib", "#{bin_path}/svn"
-    # system "install_name_tool", "-change", "/usr/local/opt/apr/lib/libapr-1.0.dylib", "#{lib_path}/apr/libapr-1.0.dylib", "#{bin_path}/svn"
-    # system "install_name_tool", "-change", "/usr/local/opt/gettext/lib/libintl.8.dylib", "#{lib_path}/gettext/libintl.8.dylib", "#{bin_path}/svn"
+    # 定义需要更新的文件列表
+    files_to_update = Dir["#{bin_path}/*"] + Dir["#{lib_path}/*.dylib"]
+
+    files_to_update.each do |file|
+      # 使用 otool 检查依赖关系
+      dependencies = `otool -L #{file}`.split("\n").map(&:strip)
+      dependencies.each do |dep|
+        next if dep == file # 跳过自身引用
+        old_path = dep.split(" ").first
+        if old_path.start_with?("/usr/local/svn")
+          new_path = old_path.sub("/usr/local/svn", "@rpath")
+          system "install_name_tool", "-change", old_path, new_path, file
+        elsif old_path.start_with?("/usr/local/opt")
+          new_path = old_path.sub("/usr/local/opt", "@rpath")
+          system "install_name_tool", "-change", old_path, new_path, file
+        end
+      end
+      # 添加 @rpath
+      system "install_name_tool", "-add_rpath", lib_path, file
+    end
   end
 end
 
