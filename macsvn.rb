@@ -19,7 +19,7 @@ class Macsvn < Formula
     lib_path = lib.to_s
 
     # 定义需要更新的文件列表
-    files_to_update = "#{bin_path}/svn" + Dir["#{lib_path}/*.dylib"]
+    files_to_update = ["#{bin_path}/svn"] + Dir["#{lib_path}/*.dylib"]
 
     files_to_update.each do |file|
       # 使用 otool 检查依赖关系
