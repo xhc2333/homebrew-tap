@@ -31,8 +31,11 @@ class Macsvn < Formula
         if old_path.start_with?("/usr/local/svn/svn")
           new_path = old_path.sub("/usr/local/svn/svn", "#{parent_dir}")
           system "install_name_tool", "-change", old_path, new_path, file
+        elsif old_path.start_with?("/usr/local/svn/serf")
+          new_path = old_path.sub("/usr/local/svn", "#{lib_path}")
+          system "install_name_tool", "-change", old_path, new_path, file
         elsif old_path.start_with?("/usr/local/opt")
-          new_path = old_path.sub("/usr/local/opt", "#{parent_dir}")
+          new_path = old_path.sub("/usr/local/opt", "#{lib_path}")
           system "install_name_tool", "-change", old_path, new_path, file
         end
       end
