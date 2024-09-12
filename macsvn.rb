@@ -17,6 +17,7 @@ class Macsvn < Formula
     # 获取安装路径
     bin_path = bin.to_s
     lib_path = lib.to_s
+    parent_dir = File.dirname(lib_path)
 
     # 定义需要更新的文件列表
     files_to_update = ["#{bin_path}/svn"] + Dir["#{lib_path}/*.dylib"]
@@ -27,11 +28,11 @@ class Macsvn < Formula
       dependencies.each do |dep|
         next if dep == file # 跳过自身引用
         old_path = dep.split(" ").first
-        if old_path.start_with?("/usr/local/svn")
-          new_path = old_path.sub("/usr/local/svn", "#{lib_path}")
+        if old_path.start_with?("/usr/local/svn/svn")
+          new_path = old_path.sub("/usr/local/svn/svn", "#{parent_dir}")
           system "install_name_tool", "-change", old_path, new_path, file
         elsif old_path.start_with?("/usr/local/opt")
-          new_path = old_path.sub("/usr/local/opt", "#{lib_path}")
+          new_path = old_path.sub("/usr/local/opt", "#{parent_dir}")
           system "install_name_tool", "-change", old_path, new_path, file
         end
       end
