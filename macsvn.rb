@@ -8,6 +8,11 @@ class Macsvn < Formula
   sha256 "7319d58bb44d29bdac0bf662d1e02d6f45b810f975f963c15280ecdeaea08976"
   license ""
 
+  depends_on "serf"
+  depends_on "apr"
+  depends_on "apr-util"
+  depends_on "zlib"
+
   def install
     bin.install "svn"
   end
