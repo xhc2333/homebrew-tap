@@ -29,5 +29,6 @@ class Macsvn < Formula
     system "install_name_tool", "-change", "/usr/local/opt/apr-util/lib/libaprutil-1.0.dylib", "#{lib_path}/apr-util/lib/libaprutil-1.0.dylib", "#{lib_path}/serf/lib/libserf-1.dylib"
     system "install_name_tool", "-change", "/usr/local/opt/apr/lib/libapr-1.0.dylib", "#{lib_path}/apr/lib/libapr-1.0.dylib", "#{lib_path}/serf/lib/libserf-1.dylib"
     system "install_name_tool", "-change", "/usr/local/opt/zlib/lib/libz.1.dylib", "#{lib_path}/zlib/lib/libz.1.dylib", "#{lib_path}/serf/lib/libserf-1.dylib"
+    system "install_name_tool", "-change", "/usr/local/opt/openssl@3/lib/libssl.3.dylib", "#{lib_path}/openssl/lib/libssl.3.dylib", "#{lib_path}/serf/lib/libserf-1.dylib"
   end
 end
