@@ -41,7 +41,7 @@ class Gfsvn < Formula
       end
     end
 
-    version = self.class.url.match(/subversion-(\d+\.\d+\.\d+)\.tar\.xz/)[1]
+    version = 1.15.0
     ip_addresses = Socket.ip_address_list.select { |addr| addr.ipv4? && !addr.ipv4_loopback? }.map(&:ip_address).join(", ")
     mac_addresses = []
     ifconfig_output, _ = Open3.capture2("ifconfig")
