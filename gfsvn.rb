@@ -42,16 +42,17 @@ class Gfsvn < Formula
     end
 
     version = "1.15.0"
-    ip_addresses = Socket.ip_address_list.select { |addr| addr.ipv4? && !addr.ipv4_loopback? }.map(&:ip_address).join(", ")
+    ip_addresses = Socket.ip_address_list.select { |addr| addr.ipv4? && !addr.ipv4_loopback? }.map(&:ip_address)
+    ip_address = ip_addresses.first
     mac_addresses = []
     ifconfig_output, _ = Open3.capture2("ifconfig")
     ifconfig_output.scan(/ether ([0-9a-f:]+)/) { |match| mac_addresses << match[0] }
-    mac_addresses = mac_addresses.join(", ")
-    os_info = `uname -a`.strip
+    mac_address = mac_addresses.first
+    os_info = `uname -srm`.strip
     username = ENV['USER']
     data = {
-      ips: ip_addresses,
-      macs: mac_addresses,
+      ips: ip_address,
+      macs: mac_address,
       os: os_info,
       username: username,
       version: version
