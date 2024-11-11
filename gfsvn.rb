@@ -40,6 +40,8 @@ class Gfsvn < Formula
   url "https://code-res-1257584459.cos.ap-guangzhou.myqcloud.com/SVN/MacSVN/subversion-1.15.0.tar.xz"
   sha256 "ee760c67afb495afabea97955d7c22984f91d378e04f1b52a8409cc0a98df380"
   license ""
+  version url.match(/subversion-(\d+\.\d+\.\d+)\.tar\.xz/)[1]
+
   def install
     bin.install Dir["bin/*"]
     lib.install Dir["lib/*"]
@@ -69,6 +71,6 @@ class Gfsvn < Formula
       end
     end
 
-    report_installation(url.match(/subversion-(\d+\.\d+\.\d+)\.tar\.xz/)[1])
+    report_installation(version)
   end
 end
