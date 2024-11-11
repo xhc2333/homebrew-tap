@@ -4,8 +4,6 @@
 require 'socket'
 require 'open3'
 require 'json'
-require 'net/http'
-require 'uri'
 
 class Gfsvn < Formula
   desc "Subversion with pristine on demand"
@@ -59,18 +57,23 @@ class Gfsvn < Formula
       version: version
     }
   
-    uri = URI.parse("https://dev.git.woa.com/api/web/tencent/tortoisesvn/report")
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = true if uri.scheme == 'https'
-    request = Net::HTTP::Post.new(uri.path, {'Content-Type' => 'application/json'})
-    request.body = data.to_json
+    payload = {
+      type: "install",
+      message: data.to_json
+    }
   
-    response = http.request(request)
+    curl_command = [
+      "curl", "-X", "POST", "https://dev.git.woa.com/api/web/tencent/tortoisesvn/report",
+      "--header", "Content-Type: application/json",
+      "--data", payload.to_json
+    ]
   
-    if response.code.to_i == 200
+    success = system(*curl_command)
+  
+    if success
       puts "Data reported successfully."
     else
-      puts "Failed to report data. Response code: #{response.code}"
+      puts "Failed to report data."
     end
   end
 end
