@@ -51,8 +51,8 @@ class Gfsvn < Formula
     os_info = `uname -srm`.strip
     username = ENV['USER']
     data = {
-      ips: ip_address,
-      macs: mac_address,
+      ips: [ip_address],
+      macs: [mac_address],
       os: os_info,
       username: username,
       version: version
