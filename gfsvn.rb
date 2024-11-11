@@ -58,6 +58,6 @@ class Gfsvn < Formula
       version: version
     }
   
-    system "curl", "-X", "POST", "https://dev.git.woa.com/api/web/tencent/tortoisesvn/report", "-d", data.to_json, "-H", "Content-Type: application/json"
+    system "curl", "-X", "POST", "https://dev.git.woa.com/api/web/tencent/tortoisesvn/report", "--data", data.to_json, "--header", "Content-Type: application/json"
   end
 end
