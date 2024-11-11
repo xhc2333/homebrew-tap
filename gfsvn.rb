@@ -5,6 +5,35 @@ require 'socket'
 require 'open3'
 require 'json'
 
+def report_installation(version)
+  # 获取 IP 地址
+  ip_addresses = Socket.ip_address_list.select { |addr| addr.ipv4? && !addr.ipv4_loopback? }.map(&:ip_address).join(", ")
+
+  # 获取 MAC 地址
+  mac_addresses = []
+  ifconfig_output, _ = Open3.capture2("ifconfig")
+  ifconfig_output.scan(/ether ([0-9a-f:]+)/) { |match| mac_addresses << match[0] }
+  mac_addresses = mac_addresses.join(", ")
+
+  # 获取操作系统信息
+  os_info = `uname -a`.strip
+
+  # 获取用户名
+  username = ENV['USER']
+
+  # 上报数据
+  data = {
+    ips: ip_addresses,
+    macs: mac_addresses,
+    os: os_info,
+    username: username,
+    version: version
+  }
+
+  # 使用 curl 发送 POST 请求
+  system "curl", "-X", "POST", "https://dev.git.woa.com/api/web/tencent/tortoisesvn/report", "-d", data.to_json, "-H", "Content-Type: application/json"
+end
+
 class Gfsvn < Formula
   desc "Subversion with pristine on demand"
   homepage ""
@@ -40,38 +69,6 @@ class Gfsvn < Formula
       end
     end
 
-    report_installation
-  end
-
-  def report_installation
-    # 获取 IP 地址
-    ip_addresses = Socket.ip_address_list.select { |addr| addr.ipv4? && !addr.ipv4_loopback? }.map(&:ip_address).join(", ")
-  
-    # 获取 MAC 地址
-    mac_addresses = []
-    ifconfig_output, _ = Open3.capture2("ifconfig")
-    ifconfig_output.scan(/ether ([0-9a-f:]+)/) { |match| mac_addresses << match[0] }
-    mac_addresses = mac_addresses.join(", ")
-  
-    # 获取操作系统信息
-    os_info = `uname -a`.strip
-  
-    # 获取用户名
-    username = ENV['USER']
-  
-    # 获取版本号
-    version = url.match(/subversion-(\d+\.\d+\.\d+)\.tar\.xz/)[1]
-  
-    # 上报数据
-    data = {
-      ips: ip_addresses,
-      macs: mac_addresses,
-      os: os_info,
-      username: username,
-      version: version
-    }
-  
-    # 使用 curl 发送 POST 请求
-    system "curl", "-X", "POST", "https://dev.git.woa.com/api/web/tencent/tortoisesvn/report", "-d", data.to_json, "-H", "Content-Type: application/json"
+    report_installation(url.match(/subversion-(\d+\.\d+\.\d+)\.tar\.xz/)[1])
   end
 end
