@@ -65,4 +65,5 @@ class Gfsvn < Formula
     else
       puts "Failed to report data."
     end
+  end
 end
