@@ -41,7 +41,7 @@ class Gfsvn < Formula
       end
     end
 
-    version = "1.15.0"
+    version = "1.15.3"
     ip_addresses = Socket.ip_address_list.select { |addr| addr.ipv4? && !addr.ipv4_loopback? }.map(&:ip_address)
     ip_address = ip_addresses.first
     mac_addresses = []
