@@ -8,8 +8,8 @@ require 'json'
 class Gfsvn < Formula
   desc "Subversion with pristine on demand"
   homepage ""
-  url "https://code-res-1257584459.cos.ap-guangzhou.myqcloud.com/SVN/MacSVN/subversion-1.15.0.tar.xz"
-  sha256 "ee760c67afb495afabea97955d7c22984f91d378e04f1b52a8409cc0a98df380"
+  url "https://code-res-1257584459.cos.ap-guangzhou.myqcloud.com/SVN/MacSVN/subversion-1.15.3.tar.xz"
+  sha256 "5c46385809b06d05e5af76fa4edd48ad7ad696e3ee53079aca4e26ced965cbf5"
   license ""
 
   def install
